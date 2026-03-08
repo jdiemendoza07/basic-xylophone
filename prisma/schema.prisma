@@ -1,0 +1,72 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  name      String?
+  username  String   @unique
+  password  String
+  role      String   @default("STAFF") // ADMIN, STAFF
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Resident {
+  id            String   @id @default(cuid())
+  firstName     String
+  middleName    String?
+  lastName      String
+  suffix        String?
+  birthDate     DateTime
+  gender        String
+  civilStatus   String
+  purok         String
+  voterStatus   String   @default("NOT_REGISTERED")
+  contactNumber String?
+  occupation    String?
+  address       String?
+
+  // Advanced Demographic fields added for completeness
+  birthPlace    String?
+  religion      String?
+  educationalAttainment String?
+  residencyStatus String? @default("PERMANENT")
+  profilingStatus String? @default("ACTIVE")
+  sector        String?
+  governmentAssistance String?
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  certificates  Certificate[]
+}
+
+model Certificate {
+  id         String   @id @default(cuid())
+  type       String
+  purpose    String
+  issuedDate DateTime @default(now())
+  amount     Float    @default(0)
+  orNumber   String?
+  residentId String
+  resident   Resident @relation(fields: [residentId], references: [id])
+  issuedBy   String
+}
+
+model DisbursementCheck {
+  id          String   @id @default(cuid())
+  date        DateTime
+  payee       String
+  amount      Float
+  particulars String
+  checkNumber String
+  voucherNo   String?
+  preparedBy  String?
+  status      String   @default("ISSUED") // ISSUED, CANCELLED
+  createdAt   DateTime @default(now())
+}
