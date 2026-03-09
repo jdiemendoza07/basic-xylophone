@@ -1,8 +1,8 @@
-import { PrismaClient } from "@prisma/client";
+import prisma from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import ResidentForm from "../ResidentForm";
 
-const prisma = new PrismaClient();
+
 
 export default async function EditResidentPage({ params }: { params: Promise<{ id: string }> }) {
   const resident = await prisma.resident.findUnique({

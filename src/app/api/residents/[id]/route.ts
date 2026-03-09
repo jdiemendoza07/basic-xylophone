@@ -1,19 +1,53 @@
 import { NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
+import prisma from "@/lib/prisma";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/lib/auth";
 
-const prisma = new PrismaClient();
+export async function GET(
+  req: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const session = await getServerSession(authOptions);
+  if (!session) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
 
-export async function PUT(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
+    const { id } = await params;
+    const resident = await prisma.resident.findUnique({
+      where: { id },
+      include: {
+        certificates: true,
+      },
+    });
+
+    if (!resident) {
+      return NextResponse.json({ error: "Resident not found" }, { status: 404 });
+    }
+
+    return NextResponse.json(resident);
+  } catch (error) {
+    return NextResponse.json({ error: "Failed to fetch resident" }, { status: 500 });
+  }
+}
+
+export async function PUT(
+  req: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const session = await getServerSession(authOptions);
+  if (!session) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  try {
+    const { id } = await params;
     const data = await req.json();
     const resident = await prisma.resident.update({
-      where: { id: (await params).id },
+      where: { id },
       data: {
         ...data,
-        id: undefined,
-        createdAt: undefined,
-        updatedAt: undefined,
-        birthDate: new Date(data.birthDate),
+        birthDate: data.birthDate ? new Date(data.birthDate) : undefined,
       },
     });
     return NextResponse.json(resident);
@@ -22,12 +56,21 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
   }
 }
 
-export async function DELETE(req: Request, { params }: { params: Promise<{ id: string }> }) {
+export async function DELETE(
+  req: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const session = await getServerSession(authOptions);
+  if (!session) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   try {
+    const { id } = await params;
     await prisma.resident.delete({
-      where: { id: (await params).id },
+      where: { id },
     });
-    return NextResponse.json({ success: true });
+    return new NextResponse(null, { status: 204 });
   } catch (error) {
     return NextResponse.json({ error: "Failed to delete resident" }, { status: 500 });
   }

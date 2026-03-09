@@ -1,9 +1,9 @@
-import { PrismaClient } from "@prisma/client";
+import prisma from "@/lib/prisma";
 import Link from "next/link";
 import { Plus, Search, FileBadge } from "lucide-react";
 import { format } from "date-fns";
 
-const prisma = new PrismaClient();
+
 
 export default async function CertificatesPage() {
   const certificates = await prisma.certificate.findMany({

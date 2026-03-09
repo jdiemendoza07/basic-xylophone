@@ -1,8 +1,8 @@
-import { PrismaClient } from "@prisma/client";
+import prisma from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import DisbursementForm from "../DisbursementForm";
 
-const prisma = new PrismaClient();
+
 
 export default async function EditDisbursementPage({ params }: { params: Promise<{ id: string }> }) {
   const check = await prisma.disbursementCheck.findUnique({

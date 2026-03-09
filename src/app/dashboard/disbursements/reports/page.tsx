@@ -1,8 +1,8 @@
-import { PrismaClient } from "@prisma/client";
+import prisma from "@/lib/prisma";
 import { format, startOfMonth, endOfMonth, startOfYear, endOfYear, subMonths, startOfQuarter, endOfQuarter } from "date-fns";
 import PrintButton from "@/app/dashboard/components/PrintButton";
 
-const prisma = new PrismaClient();
+
 
 export default async function DisbursementReportsPage({
   searchParams,

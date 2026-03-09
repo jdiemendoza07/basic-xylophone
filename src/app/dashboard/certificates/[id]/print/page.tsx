@@ -1,8 +1,8 @@
-import { PrismaClient } from "@prisma/client";
+import prisma from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import { format } from "date-fns";
 
-const prisma = new PrismaClient();
+
 
 export default async function PrintCertificatePage({ params }: { params: Promise<{ id: string }> }) {
   const certificate = await prisma.certificate.findUnique({

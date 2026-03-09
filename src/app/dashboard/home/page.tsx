@@ -1,7 +1,7 @@
-import { PrismaClient } from "@prisma/client";
+import prisma from "@/lib/prisma";
 import { Users, FileText, Banknote } from "lucide-react";
 
-const prisma = new PrismaClient();
+
 
 export default async function HomePage() {
   const [totalResidents, totalCertificates, recentDisbursements] = await Promise.all([

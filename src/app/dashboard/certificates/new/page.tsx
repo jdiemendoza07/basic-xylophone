@@ -1,7 +1,7 @@
-import { PrismaClient } from "@prisma/client";
+import prisma from "@/lib/prisma";
 import CertificateForm from "./CertificateForm";
 
-const prisma = new PrismaClient();
+
 
 export default async function NewCertificatePage() {
   const residents = await prisma.resident.findMany({

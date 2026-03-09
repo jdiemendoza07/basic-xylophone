@@ -1,9 +1,9 @@
-import { PrismaClient } from "@prisma/client";
+import prisma from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import { format } from "date-fns";
 import { numberToWords } from "@/utils/numberToWords";
 
-const prisma = new PrismaClient();
+
 
 export default async function PrintCheckPage({ params }: { params: Promise<{ id: string }> }) {
   const check = await prisma.disbursementCheck.findUnique({
